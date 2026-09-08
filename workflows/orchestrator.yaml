@@ -1,0 +1,101 @@
+workflow_name: ebook_production_pipeline
+version: 1.0.0
+entrypoint: orchestrator
+
+state_machine:
+  - IDEA
+  - RESEARCHING
+  - VALIDATING
+  - APPROVED
+  - OUTLINING
+  - WRITING
+  - EDITING
+  - QA
+  - PRODUCTION
+  - PACKAGING
+  - READY_FOR_SALE
+  - SELLING
+  - OPTIMISING
+
+agents:
+  opportunity_scout:
+    file: agents/opportunity_scout.py
+    state: RESEARCHING
+    next: VALIDATING
+  product_strategist:
+    file: agents/product_strategist.py
+    state: APPROVED
+    next: OUTLINING
+  research_agent:
+    file: agents/research_agent.py
+    state: OUTLINING
+    next: WRITING
+  outline_architect:
+    file: agents/outline_architect.py
+    state: OUTLINING
+    next: WRITING
+  author_agent:
+    file: agents/author_agent.py
+    state: WRITING
+    next: EDITING
+  google_docs_editor:
+    file: agents/google_docs_editor.py
+    state: EDITING
+    next: QA
+  editorial_qa:
+    file: agents/editorial_qa.py
+    state: QA
+    next: PRODUCTION
+    on_fail: EDITING
+  ebook_production:
+    file: agents/ebook_production.py
+    state: PRODUCTION
+    next: PACKAGING
+  product_packaging:
+    file: agents/product_packaging.py
+    state: PACKAGING
+    next: READY_FOR_SALE
+  stripe_revenue:
+    file: agents/stripe_revenue.py
+    state: READY_FOR_SALE
+    next: SELLING
+  marketing_agent:
+    file: agents/marketing_agent.py
+    state: READY_FOR_SALE
+    next: SELLING
+  customer_feedback:
+    file: agents/customer_feedback.py
+    state: SELLING
+    next: OPTIMISING
+
+mcp_tools:
+  - web_search
+  - github
+  - obsidian_vault
+  - google_docs
+  - stripe_mcp
+
+revenue_metrics:
+  - visitors
+  - leads
+  - checkout_starts
+  - conversion_rate
+  - average_order_value
+  - refund_rate
+  - revenue
+  - revenue_per_product
+  - revenue_per_channel
+
+rules:
+  - RULE 1  Research before writing.
+  - RULE 2  Validate demand before spending significant production effort.
+  - RULE 3  Use credible sources for factual claims.
+  - RULE 4  Never fabricate citations, statistics or customer testimonials.
+  - RULE 5  Human approval is required before publishing sensitive or high-stakes factual material.
+  - RULE 6  GitHub is the version-controlled production source.
+  - RULE 7  Obsidian is the long-term knowledge source.
+  - RULE 8  Google Docs is the collaborative editorial workspace.
+  - RULE 9  Stripe is the payment/revenue infrastructure.
+  - RULE 10 Every published product receives a unique version.
+  - RULE 11 Sales data feeds product optimisation.
+  - RULE 12 Prioritise profitable opportunities, not simply generate more ebooks.
