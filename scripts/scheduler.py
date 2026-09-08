@@ -130,7 +130,7 @@ def run_today():
     state = advance(state)
     save_state(state)
 
-    print(f"Next run: Track {state['current_track']} — {get_today_action(state)['action']}")
+    print(f"Next run: {get_today_action(state)['action']}")
     print(f"State saved to: {STATE_FILE}")
 
     return action
