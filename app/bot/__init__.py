@@ -1,0 +1,1 @@
+# app/bot package - Bot implementations for Fair Dinkum Publishing

@@ -1,0 +1,24 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - APP_ENV=development
+      - DATABASE_URL=sqlite:///./data/app.db
+      - OBSIDIAN_VAULT_PATH=./data/obsidian-vault
+      - ARTIFACT_STORAGE_PATH=./data/artifacts
+      - UPLOAD_STORAGE_PATH=./data/uploads
+      - PUBLIC_BASE_URL=http://localhost:8000
+  db:
+    image: sqlite:latest
+    volumes:
+      - db-data:/var/lib/sqlite
+
+volumes:
+  db-data:

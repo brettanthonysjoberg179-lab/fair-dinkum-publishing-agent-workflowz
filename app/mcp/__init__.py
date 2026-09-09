@@ -1,0 +1,1 @@
+# app/mcp package - MCP servers for Fair Dinkum Publishing Agent Workforce
