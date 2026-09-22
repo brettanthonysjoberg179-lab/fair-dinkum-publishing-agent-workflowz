@@ -1,0 +1,28 @@
+{
+  "business": "Fair Dinkum Publishing",
+  "manager": "fair_dinkum_manager.mjs (run with: composio run -f <file> -- --title \"...\" --niche \"...\" --price 49 --stage all --auto)",
+  "automation_target": "99% — humans only at GATE-1 (pre-publish approval) and GATE-2 (live checkout verify)",
+  "defaults": {
+    "airtable_base": "appqqwluJEP7553HY",
+    "airtable_table": "Embeddings & Documents",
+    "calendar_id": "primary",
+    "github_owner_repo": "see --repo (default: brettanthonysjoberg179/fair-dinkum-publishing-agent-workflowz)",
+    "drive_folder_name": "FDP-{product_id}",
+    "docs_title_prefix": "[FDP]",
+    "obsidian_vault": "Documents/Obsidian Vault",
+    "product_base": "digital_product_workforce/outputs/prod-fairdinkum-ebook-001",
+    "currency": "AUD",
+    "gst_inclusive": true
+  },
+  "stages": [
+    {"id": 1, "key": "research", "name": "Research", "composio": ["AIRTABLE_CREATE_RECORDS", "GITHUB_CREATE_AN_ISSUE", "GOOGLECALENDAR_CREATE_EVENT", "GMAIL_SEND_EMAIL"], "local": ["contents-generator-workforce trend/research", "fair-dinkum workflowz market_research", "obsidian note", "RAGS retrieve"], "output": "research/01-research-brief.json"},
+    {"id": 2, "key": "draft", "name": "Draft (outline)", "composio": ["GOOGLEDOCS_CREATE_DOCUMENT_MARKDOWN", "GOOGLEDRIVE_CREATE_FOLDER", "AIRTABLE_UPDATE_RECORD"], "local": ["outline_architect", "10-chapter template"], "output": "draft/01-outline.md"},
+    {"id": 3, "key": "generate", "name": "Generate (manuscript)", "composio": ["GOOGLEDOCS_UPDATE_DOCUMENT_SECTION_MARKDOWN", "GMAIL_CREATE_EMAIL_DRAFT"], "local": ["manuscript_author", "fact_check gate"], "output": "generate/01-full-draft.md + 02-spec.json"},
+    {"id": 4, "key": "build", "name": "Build (flipbook+PDF)", "composio": ["GOOGLEDRIVE_CREATE_FILE_FROM_TEXT", "GOOGLEDRIVE_UPLOAD_FILE"], "local": ["geo-toolkit reportlab A4", "ebook_production"], "output": "build/01-flipbook.html + 02-ebook.pdf"},
+    {"id": 5, "key": "construct", "name": "Construct (cover+assets)", "composio": ["CANVA_POST_DESIGNS", "CANVA_POST_EXPORTS", "GOOGLEDRIVE_CREATE_FILE"], "local": ["cover_creative_director", "gumroad-covers/FDP-*.png"], "output": "construct/01-cover-brief.md + 02-manifest.json"},
+    {"id": 6, "key": "package", "name": "Package (zip+checksums)", "composio": ["GOOGLEDRIVE_CREATE_FILE", "GITHUB_CREATE_AN_ISSUE"], "local": ["zip + sha256", "evaluation input"], "output": "package/01-gumroad-package.zip + 02-checksums.txt"},
+    {"id": 7, "key": "publish", "name": "Publish (GATE-1)", "composio": ["GMAIL_CREATE_EMAIL_DRAFT", "AIRTABLE_UPDATE_RECORD", "GOOGLECALENDAR_CREATE_EVENT"], "local": ["EvaluatorAgent >=85/100", "HITL approval file", "fair-dinkum-book-hub + vercel"], "output": "publish/01-evaluation-report.json + 02-hitl-approval.json", "gate": "GATE-1 human pre-publish approval"},
+    {"id": 8, "key": "sell", "name": "Sell (checkout)", "composio": ["STRIPE_CREATE_PRODUCT", "STRIPE_CREATE_PRICE", "STRIPE_CREATE_CHECKOUT_SESSION", "SQUARE_CREATE_ORDER", "GMAIL_SEND_EMAIL"], "local": ["gumroad listing", "funnel_fulfillment"], "output": "sell/01-listing-copy.md + 02-skus.json", "gate": "GATE-2 live checkout verify (1 test purchase)"},
+    {"id": 9, "key": "market", "name": "Market (launch)", "composio": ["GOOGLECALENDAR_CREATE_EVENT", "AIRTABLE_CREATE_RECORDS", "GMAIL_SEND_EMAIL", "REDDIT_CREATE_POST (via reddit toolkit)"], "local": ["launch_strategist", "social pack", "RAGS store + Obsidian archive"], "output": "market/01-launch-checklist.md + 02-social-pack.md"}
+  ]
+}

@@ -1,0 +1,91 @@
+day,date,title,type,price,sku,week,theme,priority
+1,2026-09-23,50 Tradies AI Prompts v001,prompt-pack,19,FDP-F001,1,Prompt Packs,Medium
+2,2026-09-24,50 Freelancers AI Prompts v002,prompt-pack,29,FDP-F002,1,Prompt Packs,Medium
+3,2026-09-25,50 Creators AI Prompts v003,prompt-pack,19,FDP-F003,1,Prompt Packs,Medium
+4,2026-09-26,50 Side-Hustlers AI Prompts v004,prompt-pack,29,FDP-F004,1,Prompt Packs,Medium
+5,2026-09-27,50 Coaches AI Prompts v005,prompt-pack,19,FDP-F005,1,Prompt Packs,Medium
+6,2026-09-28,50 Musos AI Prompts v006,prompt-pack,29,FDP-F006,1,Prompt Packs,Medium
+7,2026-09-29,50 Makers AI Prompts v007,prompt-pack,19,FDP-F007,1,Prompt Packs,Medium
+8,2026-09-30,Market Stallholders Notion OS v008,notion-template,29,FDP-F008,2,Notion Dashboards,Medium
+9,2026-10-01,Students Notion OS v009,notion-template,39,FDP-F009,2,Notion Dashboards,Medium
+10,2026-10-02,New Parents Notion OS v010,notion-template,29,FDP-F010,2,Notion Dashboards,Medium
+11,2026-10-03,Retirees Notion OS v011,notion-template,39,FDP-F011,2,Notion Dashboards,Medium
+12,2026-10-04,Regional Aussies Notion OS v012,notion-template,29,FDP-F012,2,Notion Dashboards,Medium
+13,2026-10-05,Tradies Notion OS v013,notion-template,39,FDP-F013,2,Notion Dashboards,Medium
+14,2026-10-06,Freelancers Notion OS v014,notion-template,29,FDP-F014,2,Notion Dashboards,Medium
+15,2026-10-07,Creators Launch Checklist v015,checklist,9,FDP-F015,3,Checklists & Guides,Low
+16,2026-10-08,Side-Hustlers Launch Checklist v016,checklist,15,FDP-F016,3,Checklists & Guides,Low
+17,2026-10-09,Coaches Launch Checklist v017,checklist,9,FDP-F017,3,Checklists & Guides,Low
+18,2026-10-10,Musos Launch Checklist v018,checklist,15,FDP-F018,3,Checklists & Guides,Low
+19,2026-10-11,Makers Launch Checklist v019,checklist,9,FDP-F019,3,Checklists & Guides,Low
+20,2026-10-12,Market Stallholders Launch Checklist v020,checklist,15,FDP-F020,3,Checklists & Guides,Low
+21,2026-10-13,Students Launch Checklist v021,checklist,9,FDP-F021,3,Checklists & Guides,Low
+22,2026-10-14,New Parents Invoice + Quote Kit v022,template,19,FDP-F022,4,Business Templates,Medium
+23,2026-10-15,Retirees Invoice + Quote Kit v023,template,29,FDP-F023,4,Business Templates,Medium
+24,2026-10-16,Regional Aussies Invoice + Quote Kit v024,template,19,FDP-F024,4,Business Templates,Medium
+25,2026-10-17,Tradies Invoice + Quote Kit v025,template,29,FDP-F025,4,Business Templates,Medium
+26,2026-10-18,Freelancers Invoice + Quote Kit v026,template,19,FDP-F026,4,Business Templates,Medium
+27,2026-10-19,Creators Invoice + Quote Kit v027,template,29,FDP-F027,4,Business Templates,Medium
+28,2026-10-20,Side-Hustlers Invoice + Quote Kit v028,template,19,FDP-F028,4,Business Templates,Medium
+29,2026-10-21,Coaches 30-Day Planner v029,planner,15,FDP-F029,5,Planners,Low
+30,2026-10-22,Musos 30-Day Planner v030,planner,25,FDP-F030,5,Planners,Medium
+31,2026-10-23,Makers 30-Day Planner v031,planner,15,FDP-F031,5,Planners,Low
+32,2026-10-24,Market Stallholders 30-Day Planner v032,planner,25,FDP-F032,5,Planners,Medium
+33,2026-10-25,Students 30-Day Planner v033,planner,15,FDP-F033,5,Planners,Low
+34,2026-10-26,New Parents 30-Day Planner v034,planner,25,FDP-F034,5,Planners,Medium
+35,2026-10-27,Retirees 30-Day Planner v035,planner,15,FDP-F035,5,Planners,Low
+36,2026-10-28,Regional Aussies Email Swipe File v036,swipe-file,19,FDP-F036,6,Swipe Files,Medium
+37,2026-10-29,Tradies Email Swipe File v037,swipe-file,29,FDP-F037,6,Swipe Files,Medium
+38,2026-10-30,Freelancers Email Swipe File v038,swipe-file,19,FDP-F038,6,Swipe Files,Medium
+39,2026-10-31,Creators Email Swipe File v039,swipe-file,29,FDP-F039,6,Swipe Files,Medium
+40,2026-11-01,Side-Hustlers Email Swipe File v040,swipe-file,19,FDP-F040,6,Swipe Files,Medium
+41,2026-11-02,Coaches Email Swipe File v041,swipe-file,29,FDP-F041,6,Swipe Files,Medium
+42,2026-11-03,Musos Email Swipe File v042,swipe-file,19,FDP-F042,6,Swipe Files,Medium
+43,2026-11-04,Makers Money Tracker v043,spreadsheet,15,FDP-F043,7,Trackers & Sheets,Low
+44,2026-11-05,Market Stallholders Money Tracker v044,spreadsheet,25,FDP-F044,7,Trackers & Sheets,Medium
+45,2026-11-06,Students Money Tracker v045,spreadsheet,15,FDP-F045,7,Trackers & Sheets,Low
+46,2026-11-07,New Parents Money Tracker v046,spreadsheet,25,FDP-F046,7,Trackers & Sheets,Medium
+47,2026-11-08,Retirees Money Tracker v047,spreadsheet,15,FDP-F047,7,Trackers & Sheets,Low
+48,2026-11-09,Regional Aussies Money Tracker v048,spreadsheet,25,FDP-F048,7,Trackers & Sheets,Medium
+49,2026-11-10,Tradies Money Tracker v049,spreadsheet,15,FDP-F049,7,Trackers & Sheets,Low
+50,2026-11-11,Freelancers Playbook Mini v050,ebook,29,FDP-F050,8,Mini Ebooks,High
+51,2026-11-12,Creators Playbook Mini v051,ebook,29,FDP-F051,8,Mini Ebooks,High
+52,2026-11-13,Side-Hustlers Playbook Mini v052,ebook,29,FDP-F052,8,Mini Ebooks,High
+53,2026-11-14,Coaches Playbook Mini v053,ebook,29,FDP-F053,8,Mini Ebooks,High
+54,2026-11-15,Musos Playbook Mini v054,ebook,29,FDP-F054,8,Mini Ebooks,High
+55,2026-11-16,Makers Playbook Mini v055,ebook,29,FDP-F055,8,Mini Ebooks,High
+56,2026-11-17,Market Stallholders Playbook Mini v056,ebook,29,FDP-F056,8,Mini Ebooks,High
+57,2026-11-18,Students Printable Pack v057,printable,9,FDP-F057,9,Printables & Wallpapers,Low
+58,2026-11-19,New Parents Printable Pack v058,printable,15,FDP-F058,9,Printables & Wallpapers,Low
+59,2026-11-20,Retirees Printable Pack v059,printable,9,FDP-F059,9,Printables & Wallpapers,Low
+60,2026-11-21,Regional Aussies Printable Pack v060,printable,15,FDP-F060,9,Printables & Wallpapers,Low
+61,2026-11-22,Tradies Printable Pack v061,printable,9,FDP-F061,9,Printables & Wallpapers,Low
+62,2026-11-23,Freelancers Printable Pack v062,printable,15,FDP-F062,9,Printables & Wallpapers,Low
+63,2026-11-24,Creators Printable Pack v063,printable,9,FDP-F063,9,Printables & Wallpapers,Low
+64,2026-11-25,Side-Hustlers Resume + Cover Kit v064,career,19,FDP-F064,10,Career Packs,Medium
+65,2026-11-26,Coaches Resume + Cover Kit v065,career,29,FDP-F065,10,Career Packs,Medium
+66,2026-11-27,Musos Resume + Cover Kit v066,career,19,FDP-F066,10,Career Packs,Medium
+67,2026-11-28,Makers Resume + Cover Kit v067,career,29,FDP-F067,10,Career Packs,Medium
+68,2026-11-29,Market Stallholders Resume + Cover Kit v068,career,19,FDP-F068,10,Career Packs,Medium
+69,2026-11-30,Students Resume + Cover Kit v069,career,29,FDP-F069,10,Career Packs,Medium
+70,2026-12-01,New Parents Resume + Cover Kit v070,career,19,FDP-F070,10,Career Packs,Medium
+71,2026-12-02,Retirees Launch Kit v071,marketing-kit,29,FDP-F071,11,Marketing Kits,Medium
+72,2026-12-03,Regional Aussies Launch Kit v072,marketing-kit,39,FDP-F072,11,Marketing Kits,Medium
+73,2026-12-04,Tradies Launch Kit v073,marketing-kit,29,FDP-F073,11,Marketing Kits,Medium
+74,2026-12-05,Freelancers Launch Kit v074,marketing-kit,39,FDP-F074,11,Marketing Kits,Medium
+75,2026-12-06,Creators Launch Kit v075,marketing-kit,29,FDP-F075,11,Marketing Kits,Medium
+76,2026-12-07,Side-Hustlers Launch Kit v076,marketing-kit,39,FDP-F076,11,Marketing Kits,Medium
+77,2026-12-08,Coaches Launch Kit v077,marketing-kit,29,FDP-F077,11,Marketing Kits,Medium
+78,2026-12-09,Musos Best-of Bundle v078,bundle,45,FDP-F078,12,Bundles & Best-of,High
+79,2026-12-10,Makers Best-of Bundle v079,bundle,45,FDP-F079,12,Bundles & Best-of,High
+80,2026-12-11,Market Stallholders Best-of Bundle v080,bundle,39,FDP-F080,12,Bundles & Best-of,High
+81,2026-12-12,Students Best-of Bundle v081,bundle,45,FDP-F081,12,Bundles & Best-of,High
+82,2026-12-13,New Parents Best-of Bundle v082,bundle,45,FDP-F082,12,Bundles & Best-of,High
+83,2026-12-14,Retirees Best-of Bundle v083,bundle,39,FDP-F083,12,Bundles & Best-of,High
+84,2026-12-15,Regional Aussies Best-of Bundle v084,bundle,49,FDP-F084,12,Bundles & Best-of,High
+85,2026-12-16,Encore: Playbook Deluxe Bundle,bundle,79,FDP-F085,13,Encore Best-of,High
+86,2026-12-17,Encore: Solo + Planner Pack,bundle,49,FDP-F086,13,Encore Best-of,High
+87,2026-12-18,Encore: Creator Mega Prompts,prompt-pack,39,FDP-F087,13,Encore Best-of,High
+88,2026-12-19,Encore: Tradie Business-in-a-Box,bundle,99,FDP-F088,13,Encore Best-of,High
+89,2026-12-20,Encore: Ultimate Aussie Side-Hustle Library,bundle,149,FDP-F089,13,Encore Best-of,High
+90,2026-12-21,Day 90: Factory Report + Vault,bundle,199,FDP-F090,13,Encore Best-of,High

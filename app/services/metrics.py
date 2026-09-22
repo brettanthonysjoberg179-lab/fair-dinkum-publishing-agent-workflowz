@@ -158,7 +158,7 @@ class MetricsService:
     def get_integrations_status(self) -> Dict[str, Any]:
         """Check which integrations are configured."""
         checks = {
-            "Gmail": bool(os.getenv("GMAIL_USER") or os.getenv("COMPOSIO_API_KEY")),
+            "Gmail": bool(os.getenv("GMAIL_USER") or os.getenv("COMPOSIO_API_KEY") or os.path.exists(os.path.expanduser("~/.config/himalaya/config.toml"))),
             "Google Drive": bool(os.getenv("GOOGLE_DRIVE_FOLDER_ID") or os.getenv("COMPOSIO_API_KEY")),
             "Airtable": bool(os.getenv("AIRTABLE_API_KEY")),
             "Stripe": bool(os.getenv("STRIPE_SECRET_KEY") or os.getenv("STRIPE_API_KEY")),
