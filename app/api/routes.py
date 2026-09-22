@@ -7,7 +7,7 @@ from app.core.database import get_db
 from app.core.repositories import ProjectRepository, OpportunityRepository
 from app.models.project import ProjectStatus
 
-router = APIRouter()
+agent_router = APIRouter()
 
 
 class AgentRequest(BaseModel):
@@ -22,7 +22,7 @@ class AgentResponse(BaseModel):
     data: Optional[Dict[str, Any]] = None
 
 
-@router.get("/", tags=["agents"])
+@agent_router.get("/", tags=["agents"])
 def list_agents():
     """List all available agents."""
     agents = [
@@ -35,7 +35,7 @@ def list_agents():
     return {"agents": agents, "count": len(agents)}
 
 
-@router.post("/{agent_name}/execute", response_model=AgentResponse, tags=["agents"])
+@agent_router.post("/{agent_name}/execute", response_model=AgentResponse, tags=["agents"])
 def execute_agent(agent_name: str, request: AgentRequest):
     """Execute a specific agent workflow step."""
     valid_agents = [
@@ -57,7 +57,7 @@ def execute_agent(agent_name: str, request: AgentRequest):
     )
 
 
-@router.post("/projects", tags=["projects"])
+@agent_router.post("/projects", tags=["projects"])
 def create_project(project_id: str, title: str, niche: str, product_brief: Optional[str] = None):
     """Create a new project."""
     project = ProjectRepository.create(
@@ -78,7 +78,7 @@ def create_project(project_id: str, title: str, niche: str, product_brief: Optio
     }
 
 
-@router.get("/projects/{project_id}", tags=["projects"])
+@agent_router.get("/projects/{project_id}", tags=["projects"])
 def get_project(project_id: str):
     """Get project details."""
     project = ProjectRepository.get(project_id)
@@ -109,7 +109,7 @@ def get_project(project_id: str):
     }
 
 
-@router.patch("/projects/{project_id}/status", tags=["projects"])
+@agent_router.patch("/projects/{project_id}/status", tags=["projects"])
 def update_project_status(project_id: str, status: str):
     """Update project status."""
     try:
@@ -144,3 +144,100 @@ def get_stripe_stats():
     """Get Stripe account stats."""
     from app.services.stripe import StripeService
     return StripeService.get_stats()
+
+
+# Metrics endpoints
+metrics_router = APIRouter()
+
+
+@metrics_router.get("/health", tags=["metrics"])
+def metrics_health():
+    """Extended health check with agent count, integrations, and DB status."""
+    from app.services.metrics import MetricsService
+    svc = MetricsService()
+    db_ok = True
+    try:
+        svc._query("SELECT 1")
+    except:
+        db_ok = False
+    agents = svc.get_agent_status()
+    integrations = svc.get_integrations_status()
+    return {
+        "status": "healthy" if db_ok else "degraded",
+        "service": "fair-dinkum-publishing-agent-workforce",
+        "agents": agents["total"],
+        "active_agents": agents["active"],
+        "integrations_configured": integrations["configured"],
+        "integrations_total": integrations["total"],
+        "db_connected": db_ok,
+    }
+
+
+@metrics_router.get("/summary", tags=["metrics"])
+def metrics_summary():
+    """Full dashboard summary — all sections."""
+    from app.services.metrics import MetricsService
+    return MetricsService().get_dashboard_summary()
+
+
+@metrics_router.get("/pipeline", tags=["metrics"])
+def metrics_pipeline():
+    """Project pipeline breakdown by status."""
+    from app.services.metrics import MetricsService
+    return MetricsService().get_project_pipeline()
+
+
+@metrics_router.get("/projects", tags=["metrics"])
+def metrics_projects():
+    """List all projects."""
+    from app.services.metrics import MetricsService
+    return {"projects": MetricsService().get_project_list()}
+
+
+@metrics_router.get("/opportunities", tags=["metrics"])
+def metrics_opportunities():
+    """Opportunity scoring stats."""
+    from app.services.metrics import MetricsService
+    return MetricsService().get_opportunity_stats()
+
+
+@metrics_router.get("/agents", tags=["metrics"])
+def metrics_agents():
+    """List all agents and status."""
+    from app.services.metrics import MetricsService
+    return MetricsService().get_agent_status()
+
+
+@metrics_router.get("/integrations", tags=["metrics"])
+def metrics_integrations():
+    """Integration configuration status."""
+    from app.services.metrics import MetricsService
+    return MetricsService().get_integrations_status()
+
+
+@metrics_router.get("/formfav", tags=["metrics"])
+def metrics_formfav(date: Optional[str] = None):
+    """FormFav gallops summary for a date."""
+    from app.services.metrics import MetricsService
+    return MetricsService().get_formfav_summary(date)
+
+
+@metrics_router.get("/health-workflow", tags=["metrics"])
+def metrics_workflow_health():
+    """Workflow health — stale/active projects."""
+    from app.services.metrics import MetricsService
+    return MetricsService().get_workflow_health()
+
+
+@metrics_router.get("/manuscripts", tags=["metrics"])
+def metrics_manuscripts():
+    """Manuscript statistics."""
+    from app.services.metrics import MetricsService
+    return MetricsService().get_manuscript_stats()
+
+
+@metrics_router.get("/outlines", tags=["metrics"])
+def metrics_outlines():
+    """Outline statistics."""
+    from app.services.metrics import MetricsService
+    return MetricsService().get_outline_stats()

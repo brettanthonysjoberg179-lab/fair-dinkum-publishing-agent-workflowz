@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fair Dinkum Publishing — Live Metrics Dashboard</title>
+<style>
+:root{
+  --bg0:#0b0e11;--bg1:#13181d;--bg2:#1b222a;--bg3:#242e38;
+  --border:#2b3642;--border2:#3b4a5a;
+  --t0:#f4f6f8;--t1:#c9d3dc;--t2:#8b99a7;--t3:#5b6a7a;
+  --gold:#e8b93e;--gold-dim:#b8912f;--green:#3ecf8e;--fair:#0b7a4a;
+  --blue:#5aa9ff;--purple:#a78bfa;--cyan:#3ed6d2;--red:#ff6b6b;--amber:#ffb020;
+  --r:8px;--rl:12px;--mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'Inter',-apple-system,'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg0);color:var(--t1);font-size:13px;line-height:1.45;min-height:100vh}
+.app{max-width:1280px;margin:0 auto;padding:0 16px 48px}
+
+/* Hero */
+.hero{border:1px solid var(--border);border-radius:var(--rl);background:linear-gradient(135deg,#10281c 0%,var(--bg1) 45%,#231a05 100%);padding:20px 22px;margin:16px 0;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{display:flex;gap:14px;align-items:center}
+.logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--fair),#0ea968);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff}
+.brand h1{font-size:19px;color:var(--t0);letter-spacing:-.02em}
+.brand h1 span{color:var(--gold)}
+.sub{font-family:var(--mono);font-size:11px;color:var(--t2);margin-top:3px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;font-family:var(--mono);font-size:11px;border:1px solid var(--border)}
+.pill.ok{background:rgba(62,207,142,.1);color:var(--green);border-color:rgba(62,207,142,.25)}
+.pill.bad{background:rgba(255,107,107,.1);color:var(--red);border-color:rgba(255,107,107,.25)}
+.pill.warn{background:rgba(255,176,32,.1);color:var(--amber);border-color:rgba(255,176,32,.25)}
+.pill.info{background:rgba(90,169,255,.1);color:var(--blue);border-color:rgba(90,169,255,.25)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.clock{font-family:var(--mono);font-size:11px;color:var(--t3)}
+
+/* Cards */
+.grid-kpi{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px}
+.grid-kpi.four{grid-template-columns:repeat(4,1fr)}
+.grid-kpi.three{grid-template-columns:repeat(3,1fr)}
+@media(max-width:1100px){.grid-kpi{grid-template-columns:repeat(3,1fr)}.grid-kpi.four{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.grid-kpi,.grid-kpi.four,.grid-kpi.three{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:14px 15px;transition:border-color .15s;position:relative;overflow:hidden}
+.card:hover{border-color:var(--border2)}
+.card .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.card .val{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--t0);margin:6px 0 2px;letter-spacing:-.02em}
+.card .val small{font-size:12px;color:var(--t2);font-weight:400}
+.card .note{font-family:var(--mono);font-size:11px;color:var(--t3)}
+.card .note.good{color:var(--green)}.card .note.warn{color:var(--amber)}.card .note.err{color:var(--red)}
+.card.gold{border-color:rgba(232,185,62,.35);background:linear-gradient(180deg,rgba(232,185,62,.08),var(--bg1))}
+.card.green{border-color:rgba(62,207,142,.3)}
+
+/* Pipeline bar */
+.pipe{display:flex;height:28px;border-radius:6px;overflow:hidden;margin-top:8px;gap:2px}
+.pipe span{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:#fff;min-width:30px;transition:width .5s}
+.pipe .completed{background:var(--green)}
+.pipe .writing{background:var(--blue)}
+.pipe .editing{background:var(--purple)}
+.pipe .production{background:var(--cyan)}
+.pipe .draft{background:var(--t3)}
+.pipe .researching{background:var(--amber)}
+.pipe .outlining{background:var(--gold)}
+
+/* Sections */
+.section{background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);margin:12px 0;overflow:hidden}
+.shead{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px}
+.stitle{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t0)}
+.smeta{font-family:var(--mono);font-size:11px;color:var(--t3)}
+.sbody{padding:14px 16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--t2);padding:8px 10px;border-bottom:1px solid var(--border);font-weight:600}
+td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.015)}
+.mono{font-family:var(--mono);font-size:11.5px}
+.tag{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:5px;background:var(--bg3);border:1px solid var(--border);color:var(--t1);white-space:nowrap}
+.tag.live{background:rgba(62,207,142,.12);color:var(--green);border-color:rgba(62,207,142,.3)}
+.tag.active{background:rgba(62,207,142,.12);color:var(--green);border-color:rgba(62,207,142,.3)}
+.tag.warn{background:rgba(255,176,32,.12);color:var(--amber);border-color:rgba(255,176,32,.3)}
+.tag.err{background:rgba(255,107,107,.12);color:var(--red);border-color:rgba(255,107,107,.3)}
+.tag.stub{background:rgba(139,153,167,.12);color:var(--t2)}
+
+/* Banners */
+.banner{border-radius:var(--r);padding:12px 14px;font-size:12.5px;margin-bottom:10px;border:1px solid}
+.banner.warn{background:rgba(255,176,32,.07);border-color:rgba(255,176,32,.3);color:#ffd98a}
+.banner.err{background:rgba(255,107,107,.07);border-color:rgba(255,107,107,.3);color:#ffb3b3}
+.banner.ok{background:rgba(62,207,142,.07);border-color:rgba(62,207,142,.3);color:#9df0c6}
+.banner.info{background:rgba(90,169,255,.07);border-color:rgba(90,169,255,.3);color:#b7d6ff}
+
+/* Agent grid */
+.agents{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.agent{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;display:flex;align-items:center;gap:10px}
+.agent .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.agent .info b{font-size:12px;color:var(--t0);display:block;font-weight:600}
+.agent .info span{font-family:var(--mono);font-size:10px;color:var(--t3)}
+
+/* Integrations */
+.integ{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.chip{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:9px 11px;display:flex;gap:9px;align-items:center}
+.chip .ic{font-size:16px}.chip b{font-size:12px;color:var(--t0);display:block;font-weight:600}
+.chip span{font-family:var(--mono);font-size:10px}
+.chip.ok span{color:var(--green)}
+.chip.bad span{color:var(--red)}
+
+/* Score bars */
+.score-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:4px}
+.score-bar i{display:block;height:100%;border-radius:3px;background:var(--green)}
+.score-bar i.mid{background:var(--amber)}.score-bar i.hi{background:var(--red)}
+
+/* Log */
+.log{font-family:var(--mono);font-size:11px;max-height:170px;overflow-y:auto;display:flex;flex-direction:column;gap:3px}
+.log div{display:flex;gap:8px}.log .lt{color:var(--t3)}
+
+footer{margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--t3);text-align:center;line-height:1.7}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="hero">
+  <div class="brand">
+    <div class="logo">🇦🇺</div>
+    <div>
+      <h1>Fair Dinkum Publishing <span>·</span> Live Metrics</h1>
+      <div class="sub">Aussie Agent Workflowz · 20 agents · 11 projects · real-time data</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span id="pill8000" class="pill bad"><span class="dot"></span><span>:8000 connecting…</span></span>
+    <span id="pillDB" class="pill bad"><span class="dot"></span><span>DB checking…</span></span>
+    <span class="clock" id="clock">--:--:--</span>
+  </div>
+</div>
+
+<div id="offlineBanner" class="banner err" style="display:none">⚠️ Server offline — retrying. Showing last successful data.</div>
+
+<!-- KPI Row -->
+<div class="grid-kpi">
+  <div class="card gold">
+    <div class="lbl">Total Projects <span>📚</span></div>
+    <div class="val" id="kProjects">—</div>
+    <div class="note" id="kProjectsN">loading…</div>
+  </div>
+  <div class="card green">
+    <div class="lbl">Completed <span>✅</span></div>
+    <div class="val" id="kCompleted">—</div>
+    <div class="note good" id="kCompletedN">loading…</div>
+  </div>
+  <div class="card">
+    <div class="lbl">Active <span>🔄</span></div>
+    <div class="val" id="kActive">—</div>
+    <div class="note warn" id="kActiveN">loading…</div>
+  </div>
+  <div class="card">
+    <div class="lbl">Opportunities <span>🎯</span></div>
+    <div class="val" id="kOpps">—</div>
+    <div class="note" id="kOppsN">loading…</div>
+  </div>
+  <div class="card">
+    <div class="lbl">Agents <span>🤖</span></div>
+    <div class="val" id="kAgents">—</div>
+    <div class="note good" id="kAgentsN">loading…</div>
+  </div>
+  <div class="card">
+    <div class="lbl">Integrations <span>🔌</span></div>
+    <div class="val" id="kInteg">—</div>
+    <div class="note" id="kIntegN">loading…</div>
+  </div>
+</div>
+
+<!-- Pipeline + Health -->
+<div class="two">
+  <div class="section">
+    <div class="shead"><span class="stitle">📊 Project Pipeline</span><span class="smeta" id="pipeMeta">live from DB · poll 15s</span></div>
+    <div class="sbody">
+      <div class="pipe" id="pipeline"><span style="background:var(--t3);flex:1">loading…</span></div>
+      <div style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--t3)" id="pipelineLegend"></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="shead"><span class="stitle">🏥 System Health</span><span class="smeta" id="healthMeta">live</span></div>
+    <div class="sbody">
+      <div id="healthGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><div style="font-size:11px;color:var(--t2)">DB Connection</div><div style="font-family:var(--mono);font-size:14px;color:var(--t0)" id="hDb">—</div></div>
+        <div><div style="font-size:11px;color:var(--t2)">Stale Projects</div><div style="font-family:var(--mono);font-size:14px;color:var(--t0)" id="hStale">—</div></div>
+        <div><div style="font-size:11px;color:var(--t2)">Active Projects</div><div style="font-family:var(--mono);font-size:14px;color:var(--t0)" id="hActive">—</div></div>
+        <div><div style="font-size:11px;color:var(--t2)">Last Poll</div><div style="font-family:var(--mono);font-size:14px;color:var(--t0)" id="hLast">—</div></div>
+      </div>
+      <div class="log" id="sysLog" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Projects Table -->
+<div class="section">
+  <div class="shead"><span class="stitle">📚 All Projects</span><span class="smeta" id="projMeta">live from DB</span></div>
+  <div class="sbody" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Project ID</th><th>Title</th><th>Niche</th><th>Status</th><th>Updated</th></tr></thead>
+      <tbody id="projectsBody"><tr><td colspan="5" style="color:var(--t3)">Loading projects…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Opportunities -->
+<div class="two">
+  <div class="section">
+    <div class="shead"><span class="stitle">🎯 Top Keywords</span><span class="smeta">opportunity scores · avg <span id="oppAvg">—</span></span></div>
+    <div class="sbody">
+      <div id="oppBars"></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="shead"><span class="stitle">📈 Score Distribution</span><span class="smeta" id="distMeta">live</span></div>
+    <div class="sbody">
+      <div id="scoreDist" style="display:flex;flex-direction:column;gap:8px">
+        <div style="color:var(--t3)">Loading…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Manuscripts + Outlines -->
+<div class="two">
+  <div class="section">
+    <div class="shead"><span class="stitle">📝 Manuscripts</span><span class="smeta" id="mssMeta">live</span></div>
+    <div class="sbody">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+        <div><div style="font-size:11px;color:var(--t2)">Total</div><div style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--t0)" id="mssTotal">—</div></div>
+        <div><div style="font-size:11px;color:var(--t2)">Total Words</div><div style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--t0)" id="mssWords">—</div></div>
+        <div><div style="font-size:11px;color:var(--t2)">Sections</div><div style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--t0)" id="mssSections">—</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="shead"><span class="stitle">📐 Outlines</span><span class="smeta" id="outMeta">live</span></div>
+    <div class="sbody">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div><div style="font-size:11px;color:var(--t2)">Total</div><div style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--t0)" id="outTotal">—</div></div>
+        <div><div style="font-size:11px;color:var(--t2)">Total Chapters</div><div style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--t0)" id="outChapters">—</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Agents + Integrations -->
+<div class="two">
+  <div class="section">
+    <div class="shead"><span class="stitle">🤖 Agent Fleet</span><span class="smeta" id="agentMeta">20 agents</span></div>
+    <div class="sbody"><div class="agents" id="agentGrid"></div></div>
+  </div>
+  <div class="section">
+    <div class="shead"><span class="stitle">🔌 Integrations</span><span class="smeta" id="intMeta">live env check</span></div>
+    <div class="sbody"><div class="integ" id="integGrid"></div></div>
+  </div>
+</div>
+
+<!-- FormFav -->
+<div class="section">
+  <div class="shead"><span class="sttitle">🏇 FormFav — Aus Gallops</span><span class="smeta" id="ffMeta">today</span></div>
+  <div class="sbody">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+      <div><div style="font-size:11px;color:var(--t2)">Date</div><div style="font-family:var(--mono);font-size:14px;color:var(--t0)" id="ffDate">—</div></div>
+      <div><div style="font-size:11px;color:var(--t2)">AU Tracks</div><div style="font-family:var(--mono);font-size:14px;color:var(--t0)" id="ffTracks">—</div></div>
+      <div><div style="font-size:11px;color:var(--t2)">Total Races</div><div style="font-family:var(--mono);font-size:14px;color:var(--t0)" id="ffRaces">—</div></div>
+      <div><div style="font-size:11px;color:var(--t2)">Status</div><div style="font-family:var(--mono);font-size:14px;color:var(--t0)" id="ffStatus">—</div></div>
+    </div>
+    <div id="ffTracksList" style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--t3)"></div>
+  </div>
+</div>
+
+<footer>Fair Dinkum Publishing · Aussie Agent Workflowz · Live data from SQLite + API · Poll interval 15s</footer>
+</div>
+
+<script>
+const POLL_MS = 15000;
+const API = 'http://localhost:8000';
+let summary = null;
+const $ = id => document.getElementById(id);
+const log = m => {
+  const el = $('sysLog');
+  const t = new Date().toTimeString().slice(0,8);
+  const d = document.createElement('div');
+  d.innerHTML = `<span class="lt">${t}</span><span>${m}</span>`;
+  el.prepend(d);
+  while (el.children.length > 30) el.lastChild.remove();
+};
+
+function tick() { $('clock').textContent = new Date().toTimeString().slice(0,8); }
+setInterval(tick, 1000); tick();
+
+function setPill(id, ok, txt) {
+  const e = $(id);
+  e.className = 'pill ' + (ok ? 'ok' : 'bad');
+  e.innerHTML = '<span class="dot"></span><span>' + txt + '</span>';
+}
+
+async function jget(path, ms = 5000) {
+  const c = new AbortController();
+  const t = setTimeout(() => c.abort(), ms);
+  try {
+    const r = await fetch(API + path, { signal: c.signal });
+    clearTimeout(t);
+    if (!r.ok) throw new Error(r.status);
+    return await r.json();
+  } catch(e) { clearTimeout(t); throw e; }
+}
+
+async function refreshSummary() {
+  try {
+    summary = await jget('/metrics/summary');
+    setPill('pill8000', true, ':8000 live');
+    $('offlineBanner').style.display = 'none';
+    renderAll(summary);
+    log('summary poll ok');
+  } catch(e) {
+    setPill('pill8000', false, ':8000 offline');
+    $('offlineBanner').style.display = 'block';
+    log('poll failed: ' + e.message);
+  }
+}
+
+async function refreshHealth() {
+  try {
+    const h = await jget('/metrics/health-workflow');
+    $('hActive').textContent = h.active_projects;
+    $('hStale').textContent = h.stale_projects;
+    $('hLast').textContent = new Date().toLocaleTimeString();
+    setPill('pillDB', true, 'DB connected');
+  } catch(e) {
+    setPill('pillDB', false, 'DB error');
+  }
+}
+
+function renderAll(s) {
+  const p = s.projects;
+  const o = s.opportunities;
+  const a = s.agents;
+  const i = s.integrations;
+  const f = s.formfav;
+  const m = s.manuscripts;
+  const ol = s.outlines;
+  const h = s.health;
+
+  // KPIs
+  $('kProjects').textContent = p.total;
+  $('kProjectsN').textContent = p.total + ' projects in pipeline';
+
+  const completed = (p.stages.COMPLETED || {}).count || 0;
+  const writing = (p.stages.WRITING || {}).count || 0;
+  $('kCompleted').textContent = completed;
+  $('kCompletedN').textContent = ((p.stages.COMPLETED||{}).pct||0) + '% complete';
+  $('kActive').textContent = h.active_projects;
+  $('kActiveN').textContent = h.stale_projects + ' stale (>7d)';
+
+  $('kOpps').textContent = o.total;
+  $('kOppsN').textContent = o.unique_keywords + ' unique keywords';
+
+  $('kAgents').textContent = a.active;
+  $('kAgentsN').textContent = a.total + ' registered';
+
+  $('kInteg').textContent = i.configured + '/' + i.total;
+  $('kIntegN').textContent = i.pct + '% configured';
+
+  // Pipeline bar
+  const stages = p.stages;
+  const total = p.total || 1;
+  const colors = { COMPLETED:'completed', WRITING:'writing', EDITING:'editing', PRODUCTION:'production', DRAFT:'draft', RESEARCHING:'researching', OUTLINING:'outlining' };
+  let pipe = '';
+  let legend = '';
+  for (const [stage, data] of Object.entries(stages)) {
+    const pct = (data.count / total * 100).toFixed(1);
+    const cls = colors[stage.toLowerCase()] || 'draft';
+    pipe += `<span class="${cls}" style="width:${pct}%" title="${stage}: ${data.count}">${data.count}</span>`;
+    legend += `<span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--${cls==='completed'?'green':cls==='writing'?'blue':cls==='editing'?'purple':cls==='production'?'cyan':cls==='researching'?'amber':cls==='outlining'?'gold':'t3'});margin-right:4px"></span>${stage}: ${data.count} (${pct}%)</span>`;
+  }
+  $('pipeline').innerHTML = pipe;
+  $('pipelineLegend').innerHTML = legend;
+
+  // Health
+  $('hActive').textContent = h.active_projects;
+  $('hStale').textContent = h.stale_projects;
+
+  // Projects table
+  const projects = s.projects_list || [];
+  if (projects.length) {
+    $('projectsBody').innerHTML = projects.slice(0, 20).map(p => {
+      const statusCls = p.status === 'COMPLETED' ? 'live' : p.status === 'WRITING' ? 'warn' : 'stub';
+      return `<tr><td class="mono">${p.id.slice(0,14)}…</td><td><b>${esc(p.title)}</b></td><td class="mono">${esc(p.niche)}</td><td><span class="tag ${statusCls}">● ${p.status}</span></td><td class="mono">${p.updated_at ? p.updated_at.slice(0,16) : '—'}</td></tr>`;
+    }).join('');
+  }
+
+  // Opportunities
+  if (o.top_keywords && o.top_keywords.length) {
+    const maxScore = Math.max(...o.top_keywords.map(k => k.score), 1);
+    $('oppBars').innerHTML = o.top_keywords.map(k => {
+      const pct = (k.score / maxScore * 100).toFixed(0);
+      return `<div style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;margin-bottom:2px"><span>${esc(k.keyword)}</span><span>${k.score.toFixed(1)}</span></div><div class="score-bar"><i style="width:${pct}%"></i></div></div>`;
+    }).join('');
+  }
+  $('oppAvg').textContent = o.avg_score ? o.avg_score.toFixed(1) : '—';
+
+  // Score dist
+  const dist = o.score_dist || {};
+  const distTotal = (dist.high||0) + (dist.medium||0) + (dist.low||0) || 1;
+  $('scoreDist').innerHTML = `
+    <div><div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--green)">High (70+)</span><span style="font-family:var(--mono)">${dist.high||0}</span></div><div class="score-bar"><i style="width:${(dist.high||0)/distTotal*100}%"></i></div></div>
+    <div><div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--amber)">Medium (40-69)</span><span style="font-family:var(--mono)">${dist.medium||0}</span></div><div class="score-bar"><i class="mid" style="width:${(dist.medium||0)/distTotal*100}%"></i></div></div>
+    <div><div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--red)">Low (&lt;40)</span><span style="font-family:var(--mono)">${dist.low||0}</span></div><div class="score-bar"><i class="hi" style="width:${(dist.low||0)/distTotal*100}%"></i></div></div>
+  `;
+
+  // Manuscripts
+  $('mssTotal').textContent = m.total_manuscripts;
+  $('mssWords').textContent = (m.total_words || 0).toLocaleString();
+  $('mssSections').textContent = m.total_sections;
+
+  // Outlines
+  $('outTotal').textContent = ol.total_outlines;
+  $('outChapters').textContent = ol.total_chapters;
+
+  // Agents
+  $('agentGrid').innerHTML = a.agents.map(ag =>
+    `<div class="agent"><div class="dot" style="background:var(--green)"></div><div class="info"><b>${esc(ag.name)}</b><span>${esc(ag.desc)}</span></div></div>`
+  ).join('');
+
+  // Integrations
+  const ic = { Gmail:'📧', 'Google Drive':'📄', Airtable:'🗄️', Stripe:'💳', Gumroad:'🛍️', GitHub:'🐙', Obsidian:'💎', Commasio:'🔗', FormFav:'🏇', Ollama:'🦙', Square:'⬛', Reddit:'👽' };
+  $('integGrid').innerHTML = Object.entries(i.integrations).map(([name, ok]) =>
+    `<div class="chip ${ok?'ok':'bad'}"><span class="ic">${ic[name]||'📦'}</span><div><b>${name}</b><span>${ok?'● active':'○ not set'}</span></div></div>`
+  ).join('');
+
+  // FormFav
+  $('ffDate').textContent = f.date;
+  $('ffTracks').textContent = f.au_tracks;
+  $('ffRaces').textContent = f.total_races;
+  $('ffStatus').textContent = f.fetched ? 'fetched' : 'not yet';
+  $('ffTracksList').textContent = f.tracks && f.tracks.length ? 'Tracks: ' + f.tracks.join(', ') : 'No data — run formfav fetch';
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; }
+
+(async function init() {
+  log('dashboard init · Fair Dinkum live metrics');
+  await refreshSummary();
+  await refreshHealth();
+  setInterval(refreshSummary, POLL_MS);
+  setInterval(refreshHealth, POLL_MS * 2);
+})();
+</script>
+</body>
+</html>
