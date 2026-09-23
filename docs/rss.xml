@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+    <title>Fair Dinkum Publishing</title>
+    <link>https://fairdinkum-publishing.com</link>
+    <description>Practical guides for Australian small business owners navigating AI, compliance, and digital publishing.</description>
+    <language>en-au</language>
+    <managingEditor>brettanthonysjoberg179@gmail.com (Brett Sjoberg)</managingEditor>
+    <webMaster>brettanthonysjoberg179@gmail.com (Brett Sjoberg)</webMaster>
+    <copyright>2026 Fair Dinkum Publishing</copyright>
+    <lastBuildDate>Wed, 23 Sep 2026 14:00:00 +0930</lastBuildDate>
+    <atom:link href="https://fairdinkum-publishing.com/rss.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+        <title>The AU AI Compliance Playbook: What Australian Small Businesses Need to Know</title>
+        <link>https://fairdinkum-publishing.com/posts/privacy-act-ai-compliance.html</link>
+        <guid isPermaLink="true">https://fairdinkum-publishing.com/posts/privacy-act-ai-compliance.html</guid>
+        <pubDate>Wed, 23 Sep 2026 14:00:00 +0930</pubDate>
+        <description>The Privacy Act 1988 changed. APP 1.7 now covers automated decisions. Here's what OAIC enforcement means for your business — and a 90-day checklist to get compliant.</description>
+        <category>AI Compliance</category>
+        <category>Privacy Act</category>
+        <category>Small Business</category>
+    </item>
+    
+    <item>
+        <title>From Manuscript to Market: Our Digital Publishing Workflow</title>
+        <link>https://fairdinkum-publishing.com/posts/from-manuscript-to-market.html</link>
+        <guid isPermaLink="true">https://fairdinkum-publishing.com/posts/from-manuscript-to-market.html</guid>
+        <pubDate>Tue, 22 Sep 2026 14:00:00 +0930</pubDate>
+        <description>How we use AI agents, Google Drive, and Composio to write, assemble, and publish digital products — without burning out or cutting corners.</description>
+        <category>Publishing</category>
+        <category>AI Agents</category>
+        <category>Workflow</category>
+    </item>
+    
+    <item>
+        <title>Why Australian Small Business Needs Better AI Tools</title>
+        <link>https://fairdinkum-publishing.com/posts/why-australian-small-business.html</link>
+        <guid isPermaLink="true">https://fairdinkum-publishing.com/posts/why-australian-small-business.html</guid>
+        <pubDate>Mon, 21 Sep 2026 14:00:00 +0930</pubDate>
+        <description>Most AI guides are written for US or EU audiences. We're building for Australian operators — sole traders, tradies, and small teams who need practical, locally-relevant advice.</description>
+        <category>AI</category>
+        <category>Australia</category>
+        <category>Small Business</category>
+    </item>
+</channel>
+</rss>

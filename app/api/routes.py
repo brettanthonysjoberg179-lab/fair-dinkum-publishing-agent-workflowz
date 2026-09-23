@@ -241,3 +241,17 @@ def metrics_outlines():
     """Outline statistics."""
     from app.services.metrics import MetricsService
     return MetricsService().get_outline_stats()
+
+
+@metrics_router.get("/products", tags=["metrics"])
+def metrics_products():
+    """Digital product business stats (Gumroad catalog + listings)."""
+    from app.services.metrics import MetricsService
+    return MetricsService().get_products_stats()
+
+
+@metrics_router.get("/memory", tags=["metrics"])
+def metrics_memory():
+    """RAGS memory DB stats."""
+    from app.services.metrics import MetricsService
+    return MetricsService().get_memory_stats()

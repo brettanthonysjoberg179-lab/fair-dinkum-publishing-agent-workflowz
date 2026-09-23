@@ -203,6 +203,117 @@ class MetricsService:
                 pass
         return {"date": date, "fetched": False, "au_tracks": 0, "total_races": 0, "tracks": []}
 
+    def get_products_stats(self) -> Dict[str, Any]:
+        """Digital product business stats from Gumroad catalog + DRY_RUN listings.
+
+        Reads:
+          - ~/gumroad-storefront/catalog.json (priced catalog, cents)
+          - ~/digital_product_workforce/outputs/_listings/*.json (listing records)
+        """
+        home = os.path.expanduser("~")
+        catalog_path = os.path.join(home, "gumroad-storefront", "catalog.json")
+        listings_dir = os.path.join(home, "digital_product_workforce", "outputs", "_listings")
+
+        products = []
+        try:
+            with open(catalog_path) as f:
+                cat = json.load(f)
+            for p in cat.get("products", []):
+                price_cents = p.get("price") or 0
+                products.append({
+                    "name": p.get("name"),
+                    "category": p.get("category"),
+                    "slug": p.get("slug"),
+                    "price": round(price_cents / 100, 2) if price_cents else 0,
+                    "source": "catalog",
+                })
+        except Exception:
+            pass
+
+        listings = []
+        published = 0
+        dry_run = 0
+        if os.path.isdir(listings_dir):
+            for fn in sorted(os.listdir(listings_dir)):
+                if not fn.endswith(".json"):
+                    continue
+                try:
+                    with open(os.path.join(listings_dir, fn)) as f:
+                        d = json.load(f)
+                    if isinstance(d, dict) and "listing" in d:
+                        d = d.get("listing") or {}
+                    status = str(d.get("status") or d.get("mode") or "dry_run")
+                    live = status.lower() == "published"
+                    if live:
+                        published += 1
+                    else:
+                        dry_run += 1
+                    price = d.get("price") or 0
+                    listings.append({
+                        "file": fn,
+                        "name": d.get("name") or d.get("title") or d.get("product_name") or fn,
+                        "price": round(float(price), 2) if price else 0,
+                        "status": status,
+                    })
+                except Exception:
+                    continue
+
+        priced = [p for p in products if p["price"]]
+        return {
+            "catalog_count": len(products),
+            "catalog_total_value": round(sum(p["price"] for p in priced), 2),
+            "catalog_avg_price": round(sum(p["price"] for p in priced) / len(priced), 2) if priced else 0,
+            "categories": sorted({p["category"] for p in products if p.get("category")}),
+            "products": products,
+            "listings_count": len(listings),
+            "published_count": published,
+            "dry_run_count": dry_run,
+            "listings": listings,
+        }
+
+    def get_memory_stats(self) -> Dict[str, Any]:
+        """RAGS memory DB statistics."""
+        mem_path = os.path.join(os.path.expanduser("~"), "rags_memory_db", "rags_memory.db")
+        stats = {
+            "db_exists": os.path.exists(mem_path),
+            "total": 0,
+            "active": 0,
+            "memories_by_type": {},
+            "feedbacks": 0,
+            "modules": {},
+            "avg_confidence": 0.0,
+        }
+        if not stats["db_exists"]:
+            return stats
+        try:
+            conn = sqlite3.connect(mem_path)
+            conn.row_factory = sqlite3.Row
+            cur = conn.cursor()
+            cur.execute("SELECT COUNT(*) c FROM memory_vectors")
+            stats["total"] = cur.fetchone()["c"]
+            cur.execute("SELECT COUNT(*) c FROM memory_vectors WHERE is_active = 1")
+            stats["active"] = cur.fetchone()["c"]
+            cur.execute("SELECT memory_type, COUNT(*) c FROM memory_vectors GROUP BY memory_type")
+            stats["memories_by_type"] = {r["memory_type"]: r["c"] for r in cur.fetchall()}
+            cur.execute("SELECT COUNT(*) c FROM memory_feedback")
+            stats["feedbacks"] = cur.fetchone()["c"]
+            cur.execute("SELECT metadata, confidence FROM memory_vectors WHERE is_active = 1")
+            confs = []
+            for r in cur.fetchall():
+                confs.append(r["confidence"] or 0)
+                try:
+                    meta = json.loads(r["metadata"] or "{}")
+                    mod = meta.get("module")
+                    if mod is not None:
+                        stats["modules"][str(mod)] = stats["modules"].get(str(mod), 0) + 1
+                except Exception:
+                    pass
+            stats["avg_confidence"] = round(sum(confs) / len(confs), 2) if confs else 0.0
+            conn.close()
+        except Exception:
+            pass
+        return stats
+
     def get_dashboard_summary(self) -> Dict[str, Any]:
         """Aggregate summary for the main dashboard."""
         pipeline = self.get_project_pipeline()

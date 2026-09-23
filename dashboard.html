@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fair Dinkum Publishing — Live Metrics Dashboard</title>
+<title>Fair Dinkum Publishing — Business Metrics Dashboard</title>
 <style>
 :root{
   --bg0:#0b0e11;--bg1:#13181d;--bg2:#1b222a;--bg3:#242e38;
   --border:#2b3642;--border2:#3b4a5a;
   --t0:#f4f6f8;--t1:#c9d3dc;--t2:#8b99a7;--t3:#5b6a7a;
-  --gold:#e8b93e;--gold-dim:#b8912f;--green:#3ecf8e;--fair:#0b7a4a;
+  --gold:#e8b93e;--green:#3ecf8e;--fair:#0b7a4a;
   --blue:#5aa9ff;--purple:#a78bfa;--cyan:#3ed6d2;--red:#ff6b6b;--amber:#ffb020;
   --r:8px;--rl:12px;--mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
   --sans:'Inter',-apple-system,'Segoe UI',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:var(--sans);background:var(--bg0);color:var(--t1);font-size:13px;line-height:1.45;min-height:100vh}
+a{color:var(--gold)}
 .app{max-width:1280px;margin:0 auto;padding:0 16px 48px}
 
 /* Hero */
@@ -30,7 +31,6 @@ body{font-family:var(--sans);background:var(--bg0);color:var(--t1);font-size:13p
 .pill.ok{background:rgba(62,207,142,.1);color:var(--green);border-color:rgba(62,207,142,.25)}
 .pill.bad{background:rgba(255,107,107,.1);color:var(--red);border-color:rgba(255,107,107,.25)}
 .pill.warn{background:rgba(255,176,32,.1);color:var(--amber);border-color:rgba(255,176,32,.25)}
-.pill.info{background:rgba(90,169,255,.1);color:var(--blue);border-color:rgba(90,169,255,.25)}
 .dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .clock{font-family:var(--mono);font-size:11px;color:var(--t3)}
@@ -38,10 +38,8 @@ body{font-family:var(--sans);background:var(--bg0);color:var(--t1);font-size:13p
 /* Cards */
 .grid-kpi{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px}
 .grid-kpi.four{grid-template-columns:repeat(4,1fr)}
-.grid-kpi.three{grid-template-columns:repeat(3,1fr)}
-@media(max-width:1100px){.grid-kpi{grid-template-columns:repeat(3,1fr)}.grid-kpi.four{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:640px){.grid-kpi,.grid-kpi.four,.grid-kpi.three{grid-template-columns:repeat(2,1fr)}}
-.card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:14px 15px;transition:border-color .15s;position:relative;overflow:hidden}
+@keyframes fadein{from{opacity:.35;transform:translateY(2px)}to{opacity:1;transform:none}}
+.card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:14px 15px;transition:border-color .15s;position:relative;overflow:hidden;animation:fadein .5s ease}
 .card:hover{border-color:var(--border2)}
 .card .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:6px}
 .card .val{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--t0);margin:6px 0 2px;letter-spacing:-.02em}
@@ -69,7 +67,8 @@ body{font-family:var(--sans);background:var(--bg0);color:var(--t1);font-size:13p
 .smeta{font-family:var(--mono);font-size:11px;color:var(--t3)}
 .sbody{padding:14px 16px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:900px){.two{grid-template-columns:1fr}}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:1000px){.two,.three{grid-template-columns:1fr}}
 
 /* Tables */
 table{width:100%;border-collapse:collapse;font-size:12.5px}
@@ -79,9 +78,8 @@ tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,.015)}
 .mono{font-family:var(--mono);font-size:11.5px}
 .tag{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:5px;background:var(--bg3);border:1px solid var(--border);color:var(--t1);white-space:nowrap}
-.tag.live{background:rgba(62,207,142,.12);color:var(--green);border-color:rgba(62,207,142,.3)}
-.tag.active{background:rgba(62,207,142,.12);color:var(--green);border-color:rgba(62,207,142,.3)}
-.tag.warn{background:rgba(255,176,32,.12);color:var(--amber);border-color:rgba(255,176,32,.3)}
+.tag.live,.tag.active,.tag.published{background:rgba(62,207,142,.12);color:var(--green);border-color:rgba(62,207,142,.3)}
+.tag.warn,.tag.dry_run{background:rgba(255,176,32,.12);color:var(--amber);border-color:rgba(255,176,32,.3)}
 .tag.err{background:rgba(255,107,107,.12);color:var(--red);border-color:rgba(255,107,107,.3)}
 .tag.stub{background:rgba(139,153,167,.12);color:var(--t2)}
 
@@ -107,6 +105,12 @@ tr:hover td{background:rgba(255,255,255,.015)}
 .chip.ok span{color:var(--green)}
 .chip.bad span{color:var(--red)}
 
+/* Mini stat tiles */
+.tile{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px}
+.tile .t{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--t2);font-weight:600}
+.tile .v{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--t0);margin-top:4px}
+.tile .v small{font-size:11px;color:var(--t2);font-weight:400}
+
 /* Score bars */
 .score-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:4px}
 .score-bar i{display:block;height:100%;border-radius:3px;background:var(--green)}
@@ -127,13 +131,14 @@ footer{margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--t3);te
   <div class="brand">
     <div class="logo">🇦🇺</div>
     <div>
-      <h1>Fair Dinkum Publishing <span>·</span> Live Metrics</h1>
-      <div class="sub">Aussie Agent Workflowz · 20 agents · 11 projects · real-time data</div>
+      <h1>Fair Dinkum Publishing <span>·</span> Business Metrics</h1>
+      <div class="sub">Aussie Agent Workflowz · Founder Brett Sjoberg · ABN 63 590 716 023 · SQLite + Gumroad catalog + RAGS memory · live</div>
     </div>
   </div>
   <div class="badges">
     <span id="pill8000" class="pill bad"><span class="dot"></span><span>:8000 connecting…</span></span>
     <span id="pillDB" class="pill bad"><span class="dot"></span><span>DB checking…</span></span>
+    <span id="pillOllama" class="pill bad"><span class="dot"></span><span>Ollama checking…</span></span>
     <span class="clock" id="clock">--:--:--</span>
   </div>
 </div>
@@ -153,9 +158,9 @@ footer{margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--t3);te
     <div class="note good" id="kCompletedN">loading…</div>
   </div>
   <div class="card">
-    <div class="lbl">Active <span>🔄</span></div>
-    <div class="val" id="kActive">—</div>
-    <div class="note warn" id="kActiveN">loading…</div>
+    <div class="lbl">Catalog Value <span>🛍️</span></div>
+    <div class="val" id="kCatalog">—</div>
+    <div class="note warn" id="kCatalogN">loading…</div>
   </div>
   <div class="card">
     <div class="lbl">Opportunities <span>🎯</span></div>
@@ -163,18 +168,18 @@ footer{margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--t3);te
     <div class="note" id="kOppsN">loading…</div>
   </div>
   <div class="card">
-    <div class="lbl">Agents <span>🤖</span></div>
-    <div class="val" id="kAgents">—</div>
-    <div class="note good" id="kAgentsN">loading…</div>
+    <div class="lbl">Memories <span>🧠</span></div>
+    <div class="val" id="kMem">—</div>
+    <div class="note good" id="kMemN">loading…</div>
   </div>
   <div class="card">
-    <div class="lbl">Integrations <span>🔌</span></div>
-    <div class="val" id="kInteg">—</div>
-    <div class="note" id="kIntegN">loading…</div>
+    <div class="lbl">Agents <span>🤖</span></div>
+    <div class="val" id="kAgents">—</div>
+    <div class="note" id="kAgentsN">loading…</div>
   </div>
 </div>
 
-<!-- Pipeline + Health -->
+<!-- Pipeline + Health + Products mini -->
 <div class="two">
   <div class="section">
     <div class="shead"><span class="stitle">📊 Project Pipeline</span><span class="smeta" id="pipeMeta">live from DB · poll 15s</span></div>
@@ -193,6 +198,39 @@ footer{margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--t3);te
         <div><div style="font-size:11px;color:var(--t2)">Last Poll</div><div style="font-family:var(--mono);font-size:14px;color:var(--t0)" id="hLast">—</div></div>
       </div>
       <div class="log" id="sysLog" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Products + Memory -->
+<div class="two">
+  <div class="section">
+    <div class="shead"><span class="stitle">🛍️ Digital Products</span><span class="smeta" id="prodMeta">Gumroad catalog + DRY_RUN listings · live</span></div>
+    <div class="sbody">
+      <div class="three" style="margin-bottom:10px">
+        <div class="tile"><div class="t">Catalog products</div><div class="v" id="pCount">—</div></div>
+        <div class="tile"><div class="t">Avg price</div><div class="v" id="pAvg">—</div></div>
+        <div class="tile"><div class="t">Published</div><div class="v" id="pPub">—</div></div>
+      </div>
+      <div style="max-height:240px;overflow-y:auto">
+        <table>
+          <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Status</th></tr></thead>
+          <tbody id="productsBody"><tr><td colspan="4" style="color:var(--t3)">Loading products…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="shead"><span class="stitle">🧠 RAGS Memory</span><span class="smeta" id="memMeta">rags_memory_db · live</span></div>
+    <div class="sbody">
+      <div class="three" style="margin-bottom:10px">
+        <div class="tile"><div class="t">Active memories</div><div class="v" id="mTotal">—</div></div>
+        <div class="tile"><div class="t">Avg confidence</div><div class="v" id="mConf">—</div></div>
+        <div class="tile"><div class="t">Feedback</div><div class="v" id="mFb">—</div></div>
+      </div>
+      <div style="margin-top:4px" class="mono" id="mTypes">—</div>
+      <div style="margin-top:4px;font-family:var(--mono);font-size:11px;color:var(--t2)" id="mModules">—</div>
+      <div class="banner info" style="margin-top:10px" id="memBanner">RAGS knowledge modules: MCP architecture, tool design, server implementation — stored as 128-dim vectors.</div>
     </div>
   </div>
 </div>
@@ -252,7 +290,7 @@ footer{margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--t3);te
 <!-- Agents + Integrations -->
 <div class="two">
   <div class="section">
-    <div class="shead"><span class="stitle">🤖 Agent Fleet</span><span class="smeta" id="agentMeta">20 agents</span></div>
+    <div class="shead"><span class="stitle">🤖 Agent Fleet</span><span class="smeta" id="agentMeta">agents</span></div>
     <div class="sbody"><div class="agents" id="agentGrid"></div></div>
   </div>
   <div class="section">
@@ -263,7 +301,7 @@ footer{margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--t3);te
 
 <!-- FormFav -->
 <div class="section">
-  <div class="shead"><span class="sttitle">🏇 FormFav — Aus Gallops</span><span class="smeta" id="ffMeta">today</span></div>
+  <div class="shead"><span class="stitle">🏇 FormFav — Aus Gallops</span><span class="smeta" id="ffMeta">today</span></div>
   <div class="sbody">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
       <div><div style="font-size:11px;color:var(--t2)">Date</div><div style="font-family:var(--mono);font-size:14px;color:var(--t0)" id="ffDate">—</div></div>
@@ -275,13 +313,13 @@ footer{margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--t3);te
   </div>
 </div>
 
-<footer>Fair Dinkum Publishing · Aussie Agent Workflowz · Live data from SQLite + API · Poll interval 15s</footer>
+<footer>Fair Dinkum Publishing · Aussie Agent Workflowz · Live data: SQLite pipeline · Gumroad catalog + DRY_RUN listings · RAGS memory · Agents · Integrations · FormFav · Poll interval 15s · Built by MCP Orchestrator (RAGS Memory Agent + Digital Product Workforce + Content Workforce)</footer>
 </div>
 
 <script>
 const POLL_MS = 15000;
 const API = 'http://localhost:8000';
-let summary = null;
+let lastData = null;
 const $ = id => document.getElementById(id);
 const log = m => {
   const el = $('sysLog');
@@ -312,13 +350,18 @@ async function jget(path, ms = 5000) {
   } catch(e) { clearTimeout(t); throw e; }
 }
 
-async function refreshSummary() {
+async function refreshAll() {
   try {
-    summary = await jget('/metrics/summary');
+    const [s, pr, mem] = await Promise.all([
+      jget('/metrics/summary'),
+      jget('/metrics/products'),
+      jget('/metrics/memory'),
+    ]);
+    lastData = { summary: s, products: pr, memory: mem };
     setPill('pill8000', true, ':8000 live');
     $('offlineBanner').style.display = 'none';
-    renderAll(summary);
-    log('summary poll ok');
+    renderAll(lastData);
+    log('poll ok · ' + s.projects.total + ' projects · ' + pr.catalog_count + ' catalog · ' + mem.active + ' memories');
   } catch(e) {
     setPill('pill8000', false, ':8000 offline');
     $('offlineBanner').style.display = 'block';
@@ -332,53 +375,50 @@ async function refreshHealth() {
     $('hActive').textContent = h.active_projects;
     $('hStale').textContent = h.stale_projects;
     $('hLast').textContent = new Date().toLocaleTimeString();
-    setPill('pillDB', true, 'DB connected');
+    const health = await jget('/metrics/health');
+    setPill('pillDB', health.db_connected, 'DB ' + (health.db_connected ? 'connected' : 'error'));
   } catch(e) {
     setPill('pillDB', false, 'DB error');
   }
+  try {
+    const om = await jget('/ollama/api/tags', 3000).catch(() => jget('http://localhost:11434/api/tags', 3000));
+    const n = (om.models || []).length;
+    setPill('pillOllama', true, 'Ollama · ' + n + ' models');
+  } catch(e) {
+    setPill('pillOllama', false, 'Ollama offline');
+  }
 }
 
-function renderAll(s) {
-  const p = s.projects;
-  const o = s.opportunities;
-  const a = s.agents;
-  const i = s.integrations;
-  const f = s.formfav;
-  const m = s.manuscripts;
-  const ol = s.outlines;
-  const h = s.health;
+function renderAll({ summary: s, products: pr, memory: mem }) {
+  const p = s.projects, o = s.opportunities, a = s.agents, i = s.integrations, f = s.formfav, m = s.manuscripts, ol = s.outlines, h = s.health;
 
   // KPIs
   $('kProjects').textContent = p.total;
   $('kProjectsN').textContent = p.total + ' projects in pipeline';
-
   const completed = (p.stages.COMPLETED || {}).count || 0;
   const writing = (p.stages.WRITING || {}).count || 0;
   $('kCompleted').textContent = completed;
-  $('kCompletedN').textContent = ((p.stages.COMPLETED||{}).pct||0) + '% complete';
-  $('kActive').textContent = h.active_projects;
-  $('kActiveN').textContent = h.stale_projects + ' stale (>7d)';
-
+  $('kCompletedN').textContent = ((p.stages.COMPLETED||{}).pct||0) + '% complete · ' + writing + ' writing';
+  $('kCatalog').textContent = '$' + pr.catalog_total_value.toLocaleString();
+  $('kCatalogN').textContent = pr.catalog_count + ' products · $' + pr.catalog_avg_price + ' avg · ' + pr.published_count + ' published';
   $('kOpps').textContent = o.total;
   $('kOppsN').textContent = o.unique_keywords + ' unique keywords';
-
+  $('kMem').textContent = mem.active;
+  $('kMemN').textContent = mem.total + ' total · ' + (mem.memories_by_type.semantic||0) + ' semantic / ' + (mem.memories_by_type.fact||0) + ' fact';
   $('kAgents').textContent = a.active;
   $('kAgentsN').textContent = a.total + ' registered';
-
-  $('kInteg').textContent = i.configured + '/' + i.total;
-  $('kIntegN').textContent = i.pct + '% configured';
 
   // Pipeline bar
   const stages = p.stages;
   const total = p.total || 1;
-  const colors = { COMPLETED:'completed', WRITING:'writing', EDITING:'editing', PRODUCTION:'production', DRAFT:'draft', RESEARCHING:'researching', OUTLINING:'outlining' };
-  let pipe = '';
-  let legend = '';
+  const colorMap = { COMPLETED:'completed', WRITING:'writing', EDITING:'editing', PRODUCTION:'production', DRAFT:'draft', RESEARCHING:'researching', OUTLINING:'outlining' };
+  const varColor = { completed:'green', writing:'blue', editing:'purple', production:'cyan', researching:'amber', outlining:'gold', draft:'t3' };
+  let pipe = '', legend = '';
   for (const [stage, data] of Object.entries(stages)) {
     const pct = (data.count / total * 100).toFixed(1);
-    const cls = colors[stage.toLowerCase()] || 'draft';
+    const cls = colorMap[stage.toUpperCase()] || 'draft';
     pipe += `<span class="${cls}" style="width:${pct}%" title="${stage}: ${data.count}">${data.count}</span>`;
-    legend += `<span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--${cls==='completed'?'green':cls==='writing'?'blue':cls==='editing'?'purple':cls==='production'?'cyan':cls==='researching'?'amber':cls==='outlining'?'gold':'t3'});margin-right:4px"></span>${stage}: ${data.count} (${pct}%)</span>`;
+    legend += `<span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--${varColor[cls]||'t3'});margin-right:4px"></span>${stage}: ${data.count} (${pct}%)</span>`;
   }
   $('pipeline').innerHTML = pipe;
   $('pipelineLegend').innerHTML = legend;
@@ -387,12 +427,41 @@ function renderAll(s) {
   $('hActive').textContent = h.active_projects;
   $('hStale').textContent = h.stale_projects;
 
+  // Products
+  $('pCount').textContent = pr.catalog_count;
+  $('pAvg').textContent = '$' + pr.catalog_avg_price;
+  $('pPub').textContent = pr.published_count + ' live';
+  const prodRows = [];
+  for (const prod of pr.products.slice(0, 20)) {
+    const listing = pr.listings.find(l => (l.name||'').toLowerCase() === (prod.name||'').toLowerCase());
+    const status = listing ? listing.status : 'catalog';
+    const cls = status === 'published' ? 'live' : status === 'catalog' ? 'stub' : 'dry_run';
+    const lbl = status === 'published' ? '● published' : status === 'catalog' ? '○ catalog' : '◐ ' + status;
+    prodRows.push(`<tr><td><b>${esc(prod.name)}</b><br><span class="mono">${esc(prod.slug||'')}</span></td><td><span class="tag">${esc(prod.category||'—')}</span></td><td class="mono">$${prod.price}</td><td><span class="tag ${cls}">${lbl}</span></td></tr>`);
+  }
+  const dry = pr.listings.filter(l => !pr.products.some(x => (x.name||'').toLowerCase() === (l.name||'').toLowerCase()));
+  for (const l of dry.slice(0, 10)) {
+    prodRows.push(`<tr><td><b>${esc(l.name)}</b><br><span class="mono">${esc(l.file)}</span></td><td><span class="tag">—</span></td><td class="mono">$${l.price}</td><td><span class="tag dry_run">◐ ${esc(l.status)}</span></td></tr>`);
+  }
+  $('productsBody').innerHTML = prodRows.length ? prodRows.join('') : `<tr><td colspan="4" style="color:var(--t3)">No products found.</td></tr>`;
+  $('prodMeta').textContent = `category total value $${pr.catalog_total_value} · ${pr.listings_count} listings · ${pr.categories.join(', ')}`;
+
+  // Memory
+  $('mTotal').textContent = mem.active + '/' + mem.total;
+  $('mConf').textContent = (mem.avg_confidence * 100).toFixed(0) + '%';
+  $('mFb').textContent = mem.feedbacks;
+  const tb = mem.memories_by_type || {};
+  $('mTypes').innerHTML = Object.entries(tb).map(([k, v]) => `<span class="tag">${esc(k)}: ${v}</span>`).join(' ') || '<span class="tag">no memories</span>';
+  const mods = mem.modules || {};
+  const modNames = { '1':'Core concepts', '2':'Tool design', '3':'Server impl', '4':'Ops', '5':'Workflows' };
+  $('mModules').textContent = 'modules: ' + Object.entries(mods).map(([k, v]) => `${modNames[k]||k} ×${v}`).join(' · ') || '—';
+
   // Projects table
   const projects = s.projects_list || [];
   if (projects.length) {
-    $('projectsBody').innerHTML = projects.slice(0, 20).map(p => {
-      const statusCls = p.status === 'COMPLETED' ? 'live' : p.status === 'WRITING' ? 'warn' : 'stub';
-      return `<tr><td class="mono">${p.id.slice(0,14)}…</td><td><b>${esc(p.title)}</b></td><td class="mono">${esc(p.niche)}</td><td><span class="tag ${statusCls}">● ${p.status}</span></td><td class="mono">${p.updated_at ? p.updated_at.slice(0,16) : '—'}</td></tr>`;
+    $('projectsBody').innerHTML = projects.slice(0, 20).map(pj => {
+      const statusCls = pj.status === 'COMPLETED' ? 'live' : pj.status === 'WRITING' ? 'warn' : 'stub';
+      return `<tr><td class="mono">${esc(pj.id.slice(0,14))}…</td><td><b>${esc(pj.title)}</b></td><td class="mono">${esc(pj.niche)}</td><td><span class="tag ${statusCls}">● ${esc(pj.status)}</span></td><td class="mono">${pj.updated_at ? esc(pj.updated_at.slice(0,16)) : '—'}</td></tr>`;
     }).join('');
   }
 
@@ -406,7 +475,6 @@ function renderAll(s) {
   }
   $('oppAvg').textContent = o.avg_score ? o.avg_score.toFixed(1) : '—';
 
-  // Score dist
   const dist = o.score_dist || {};
   const distTotal = (dist.high||0) + (dist.medium||0) + (dist.low||0) || 1;
   $('scoreDist').innerHTML = `
@@ -428,12 +496,14 @@ function renderAll(s) {
   $('agentGrid').innerHTML = a.agents.map(ag =>
     `<div class="agent"><div class="dot" style="background:var(--green)"></div><div class="info"><b>${esc(ag.name)}</b><span>${esc(ag.desc)}</span></div></div>`
   ).join('');
+  $('agentMeta').textContent = a.active + '/' + a.total + ' active';
 
   // Integrations
-  const ic = { Gmail:'📧', 'Google Drive':'📄', Airtable:'🗄️', Stripe:'💳', Gumroad:'🛍️', GitHub:'🐙', Obsidian:'💎', Commasio:'🔗', FormFav:'🏇', Ollama:'🦙', Square:'⬛', Reddit:'👽' };
+  const ic = { Gmail:'📧', 'Google Drive':'📄', Airtable:'🗄️', Stripe:'💳', Gumroad:'🛍️', GitHub:'🐙', Obsidian:'💎', Composio:'🔗', FormFav:'🏇', Ollama:'🦙', Square:'⬛', Reddit:'👽' };
   $('integGrid').innerHTML = Object.entries(i.integrations).map(([name, ok]) =>
-    `<div class="chip ${ok?'ok':'bad'}"><span class="ic">${ic[name]||'📦'}</span><div><b>${name}</b><span>${ok?'● active':'○ not set'}</span></div></div>`
+    `<div class="chip ${ok?'ok':'bad'}"><span class="ic">${ic[name]||'📦'}</span><div><b>${esc(name)}</b><span>${ok?'● active':'○ not set'}</span></div></div>`
   ).join('');
+  $('intMeta').textContent = i.configured + '/' + i.total + ' configured (' + i.pct + '%)';
 
   // FormFav
   $('ffDate').textContent = f.date;
@@ -441,15 +511,22 @@ function renderAll(s) {
   $('ffRaces').textContent = f.total_races;
   $('ffStatus').textContent = f.fetched ? 'fetched' : 'not yet';
   $('ffTracksList').textContent = f.tracks && f.tracks.length ? 'Tracks: ' + f.tracks.join(', ') : 'No data — run formfav fetch';
+
+  // section metas
+  $('projMeta').textContent = projects.length + ' projects · updated ' + new Date().toLocaleTimeString();
+  $('mssMeta').textContent = 'live';
+  $('outMeta').textContent = 'live';
+  $('distMeta').textContent = o.total + ' scored opportunities';
+  $('ffMeta').textContent = 'today ' + f.date;
 }
 
 function esc(s) { const d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; }
 
 (async function init() {
-  log('dashboard init · Fair Dinkum live metrics');
-  await refreshSummary();
+  log('dashboard init · Fair Dinkum business metrics v2');
   await refreshHealth();
-  setInterval(refreshSummary, POLL_MS);
+  await refreshAll();
+  setInterval(refreshAll, POLL_MS);
   setInterval(refreshHealth, POLL_MS * 2);
 })();
 </script>

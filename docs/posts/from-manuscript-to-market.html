@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Manuscript to Market — Our Digital Publishing Workflow | Fair Dinkum Publishing</title>
+    <meta name="description" content="How we use AI agents, Google Drive, and Composio to write, assemble, and publish digital products — without burning out or cutting corners.">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="/" class="logo">🇦🇺 <span>Fair Dinkum</span> Publishing</a>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about.html">About</a>
+                <a href="/rss.xml">RSS</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="post-article">
+            <h1>From Manuscript to Market: Our Digital Publishing Workflow</h1>
+            <time datetime="2026-09-22">September 22, 2026</time>
+
+            <p>Writing and publishing a ebook used to take us months. Now, with the right agent infrastructure, we can go from outline to published product in weeks — sometimes days. Here's exactly how our workflow operates.</p>
+
+            <h2>The Stack</h2>
+            <p>Our publishing pipeline runs on four core tools:</p>
+            <ul>
+                <li><strong>Google Drive</strong> — storage, collaboration, file organization</li>
+                <li><strong>Composio</strong> — API toolkit connecting Drive, Gmail, and publishing platforms</li>
+                <li><strong>Ollama / Gemini</strong> — LLM backends for content generation</li>
+                <li><strong>Python agents</strong> — orchestration, scanning, and assembly</li>
+            </ul>
+
+            <h2>Phase 1: Outline & Structure</h2>
+            <p>Every product starts as a structured outline. We capture it in Google Docs so it's easy to review and share. For our current project — The AU AI Compliance Playbook — we mapped out 10 chapters covering everything from Privacy Act basics to 90-day compliance checklists.</p>
+
+            <h2>Phase 2: Chapter Generation</h2>
+            <p>We built an agent that reads the outline, checks which chapters already exist in Drive, and generates the missing ones. It tries local Ollama first (for speed and privacy), falls back to Gemini if needed, and uploads each completed chapter as a new Google Doc in our <code>01_Drafts</code> folder.</p>
+
+            <h2>Phase 3: Assembly & Review</h2>
+            <p>Once all chapters are written, a separate assembly phase downloads everything, concatenates it into a single markdown file, and converts to PDF using pandoc. The result lands in our <code>04_Deliverables</code> folder, ready for final review.</p>
+
+            <h2>Phase 4: Publish & Monitor</h2>
+            <p>The final PDF goes to Gumroad. But we also run a daily cron job that scans Drive for loose files, detects duplicates, and sends email alerts if anything needs attention. It's our automated quality gate.</p>
+
+            <h2>Why This Matters</h2>
+            <p>Small teams can't afford to spend weeks on formatting, file management, and manual publishing tasks. By automating the boring stuff, we focus on what actually matters: content quality and customer value.</p>
+
+            <p><em>This is the system behind Fair Dinkum Publishing. Follow our RSS feed for updates as we release new products and tools.</em></p>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>© 2026 Fair Dinkum Publishing · ABN 63 590 716 023 · Adelaide SA</p>
+        </div>
+    </footer>
+</body>
+</html>
